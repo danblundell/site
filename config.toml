@@ -1,8 +1,8 @@
-baseURL = "https://danblundell.com/"
+baseURL = "https://www.danblundell.com/"
 languageCode = "en-us"
 title = "Dan Blundell"
 theme = "hyde"
-googleAnalytics = "Your tracking code"
+googleAnalytics = "UA-43692868-1"
 
 #[menu]
 #  [[menu.main]]
