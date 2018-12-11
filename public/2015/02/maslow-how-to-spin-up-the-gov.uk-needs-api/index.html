@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.52" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Maslow - how to spin up the GOV.UK Needs API &middot; Dan Blundell</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Dan Blundell" />
+
+  
+</head>
+
+  <body class="theme-base-dan ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://danblundell.com/"><h1>Dan Blundell</h1></a>
+      <p class="lead">
+         
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://danblundell.com/">Home</a> </li>
+        
+      </ul>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Maslow - how to spin up the GOV.UK Needs API</h1>
+  <time datetime=2015-02-04T00:00:00Z class="post-date">Wed, Feb 4, 2015</time>
+  
+
+<p>Caveat: This post should&rsquo;ve been written back in October 2014 but life got in the way and I&rsquo;ve forgotten most of it, however, like all good developers I wrote myself some great documentation (not) so this should be a breeze right? (possibly not). Either way, I&rsquo;ll try and make it easy to follow!</p>
+
+<p>To bring you up to speed, GDS built an application called <a href="https://github.com/alphagov/maslow">Maslow</a> to capture and manage the user needs that <a href="https://www.gov.uk">GOV.UK</a> is designed to meet. I&rsquo;m sure someone from GDS can correct me on such an underwealming description but regardless, it&rsquo;s a really smart idea and something I hope can be adopted or replicated elsewhere across the public sector.</p>
+
+<p>I appreciate [GDS]() have never intended for their code to be used like an open source project and have far higher priorities than writing documentation for morons like me so here&rsquo;s my brief-ish guide to getting up and running with <a href="https://github.com/alphagov/maslow">Maslow</a>.</p>
+
+<h2 id="pre-requisites">Pre-requisites</h2>
+
+<p>This guide assumes:</p>
+
+<ul>
+<li>You&rsquo;re on a mac running OS X 10.9+</li>
+<li>You&rsquo;re reasonably familiar with ruby, the command line and git</li>
+<li>You&rsquo;re willing to remain calm in the event of having to install a bunch of stuff as we go along</li>
+</ul>
+
+<h2 id="step-1-clone-maslow">Step 1: Clone Maslow</h2>
+
+<p>We may aswell start simple right?</p>
+
+<p>Depending on your intentions you can either clone <a href="https://github.com/alphagov/maslow">Maslow</a> directly using the command below head over to the <a href="https://github.com/alphagov/maslow">Maslow repository</a>, fork it yourself. Either way, make sure you get a copy on your machine.</p>
+
+<p>{% highlight bash %}
+git clone <a href="https://github.com/alphagov/maslow.git">https://github.com/alphagov/maslow.git</a>
+{% endhighlight %}</p>
+
+<p>Once you&rsquo;ve done that, give yourself a pat on the back - first job, done.</p>
+
+<h2 id="step-2-clone-the-need-api">Step 2: Clone the Need API</h2>
+
+<p>Maslow depends on having a running instance of the <a href="https://github.com/alphagov/govuk_need_api">GOV.UK Need API</a>. Thankfully the Need API is pretty straightforward itself so head on over and grab yourself a copy, you can use the command below or the <a href="https://github.com/alphagov/govuk_need_api">GOV.UK Need API repository</a></p>
+
+<p>{% highlight bash %}
+git clone <a href="https://github.com/alphagov/govuk_need_api">https://github.com/alphagov/govuk_need_api</a>
+{% endhighlight %}</p>
+
+<p>Sweet job, we now have the <a href="https://github.com/alphagov/govuk_need_api">GOV.UK Need API</a> on our machine.</p>
+
+<h2 id="step-3-starting-the-need-api">Step 3: Starting the Need API</h2>
+
+<p>Now we have the Need API and Maslow locally, we can start the process of getting them up and running.</p>
+
+<p>The Github page for the Need API says the dependencies are:</p>
+
+<ul>
+<li><a href="http://www.elasticsearch.org/download">Elasticsearch</a></li>
+<li><a href="http://www.mongodb.org/">Mongo DB</a></li>
+</ul>
+
+<p>You&rsquo;ll need to install both of those. While you&rsquo;re there, what they don&rsquo;t tell you is that <a href="http://redis.io/topics/quickstart">Redis</a> is also required, go ahead and install that too. (I know right?)</p>
+
+<p>All installed? Move on&hellip;</p>
+
+<h2 id="step-4-getting-dependencies-running">Step 4: Getting dependencies running</h2>
+
+<p>In a new terminal window, head to your Elasticsearch install and start it up:</p>
+
+<p>{% highlight bash %}
+bin/elasticsearch
+{% endhighlight %}</p>
+
+<p>Oh and we&rsquo;ll also need to have Mongo running, start mongo in a new terminal window using:</p>
+
+<p>{% highlight bash %}
+mongod
+{% endhighlight %}</p>
+
+<p>Almost there, open another window and get Redis running:</p>
+
+<p>{% highlight bash %}
+redis-server
+{% endhighlight %}</p>
+
+<p>At this point we should be okay to run the Need API itself, open another terminal window, change directories until you&rsquo;re in your govuk_need_api directory and hit:</p>
+
+<p>{% highlight bash %}
+./script/bootstrap
+bundle exec unicorn -p 3000
+{% endhighlight %}</p>
+
+<p>All being well you should be able to visit <a href="http://localhost:3000">http://localhost:3000</a> and have a screen that looks a little like the one below.</p>
+
+<figure>
+    <img src="/img/content/need-api-local.jpg" alt="GDS's Need API application running locally in devleopment mode">
+</figure>
+
+<p>If you get this far, <a href="https://twitter.com/intent/tweet?text=@danblundell%20I%20survived%20your%20guide%20to%20Maslow!&amp;amp;related=gdsteam&amp;amp;via=danblundell&amp;amp;hashtags=localgovdigital,localgov,gdsteam,ftw">tweet me</a> and I&rsquo;ll work out some sort of prize/badge/hug type deal, points for persistance.</p>
+
+<p>Right, now we have the GOV.UK Need API running, we can get attempt to Maslow running too.</p>
+
+<h2 id="step-5-getting-maslow-running">Step 5: Getting Maslow running</h2>
+
+<p>Now, you would hope that you could just follow the instructions on the Github readme page, no such luck unfortunately. What I mean to say is, you can, but it probably won&rsquo;t work.</p>
+
+<p>In short, Maslow has an object reference to the Need API. I don&rsquo;t know nearly enough about ruby or rails to know exactly how it works, I&rsquo;m still learning but to get up and running, open up the following file:</p>
+
+<p>{% highlight bash %}
+~maslow: config\initializers\gds_api.rb
+{% endhighlight %}</p>
+
+<p>On about line 5, you&rsquo;ll see the following:</p>
+
+<p>{% highlight ruby %}
+Maslow.need_api = GdsApi::NeedApi.new(Plek.current.find(&lsquo;need-api&rsquo;),
+                                      API_CLIENT_CREDENTIALS[:need_api])
+{% endhighlight %}</p>
+
+<p>Swap it for this:</p>
+
+<p>{% highlight ruby %}
+Maslow.need_api = GdsApi::NeedApi.new(&lsquo;<a href="http://localhost:3000/'">http://localhost:3000/'</a>,
+                                      API_CLIENT_CREDENTIALS[:need_api])
+{% endhighlight %}</p>
+
+<p>All we&rsquo;re doing is swapping out the reference to <a href="https://github.com/alphagov/plek">Plek</a>, GDS&rsquo;s internal dns lookup, for a hardcoded reference to our local instance of the Need API, running on port 3000.</p>
+
+<p>Sidenote: you can set an environment variable and use Plek itself but this is the quick and dirty method that&rsquo;ll get you moving quicker - no one needs hassle right?</p>
+
+<h2 id="step-6-the-home-straight">Step 6: The home straight</h2>
+
+<p>One final thing before we start Maslow&hellip;</p>
+
+<p>We&rsquo;re not using the <a href="https://github.com/alphagov/gds-sso">GDS authorisation platform</a> so Maslow seeds the database with a user for us. Awesome right?</p>
+
+<p>The annoying thing is, unless we make a change, all you&rsquo;ll get is permission to sign-in to Maslow, you won&rsquo;t get any permissions to create or update needs or do anything of any real use.</p>
+
+<p>So one final thing, updating the user permissions of the default user:</p>
+
+<p>Head to:</p>
+
+<p>{% highlight bash %}
+~maslow: db\seeds.rb
+{% endhighlight %}</p>
+
+<p>and find the line that defines the users permissions:</p>
+
+<p>{% highlight ruby %}
+@user.permissions = [&ldquo;signin&rdquo;]
+{% endhighlight %}</p>
+
+<p>change that to</p>
+
+<p>{% highlight ruby %}
+@user.permissions = [&ldquo;signin&rdquo;,&ldquo;admin&rdquo;,&ldquo;editor&rdquo;]
+{% endhighlight %}</p>
+
+<p>Excellent, now we can fire it up!</p>
+
+<h2 id="fire-it-up">Fire it up!</h2>
+
+<p>Now you should be able to fire up Maslow, open one final new terminal window and head into the directory where you&rsquo;ve cloned maslow then run:</p>
+
+<p>{% highlight bash %}
+./script/bootstrap
+bundle exec unicorn -p 3001
+{% endhighlight %}</p>
+
+<p>All being well, you should now have Maslow up and running on your local machine, it&rsquo;ll look something like this:</p>
+
+<figure>
+    <img src="/img/content/maslow-local.jpg" alt="GDS's Maslow application running locally in devleopment mode">
+</figure>
+
+<p>That&rsquo;s it! If you got this far, bravo. I&rsquo;m amazed I did. I have pushed this a bit further and got a bunch of local authorities loaded instead of the central government departments from Whitehall but I need to revisit how I ended up doing that to be honest as it was horrendously hacky. As I say, my ruby knowledge is pretty limited, I&rsquo;ve just hacked my way through error messages until this point.</p>
+
+<p>GDS have far more important things to do than document how their stuff works so hopefully this goes some way to appeasing that frustration - if anyone else has got GOV.UK code up and running elsewhere, please let me know!</p>
+
+</div>
+
+
+    </main>
+
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'Your tracking code', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>

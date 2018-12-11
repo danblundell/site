@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Dan Blundell</title>
+    <link>https://danblundell.com/</link>
+    <description>Recent content on Dan Blundell</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 04 Feb 2015 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://danblundell.com/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Maslow - how to spin up the GOV.UK Needs API</title>
+      <link>https://danblundell.com/2015/02/maslow-how-to-spin-up-the-gov.uk-needs-api/</link>
+      <pubDate>Wed, 04 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://danblundell.com/2015/02/maslow-how-to-spin-up-the-gov.uk-needs-api/</guid>
+      <description>Caveat: This post should&amp;rsquo;ve been written back in October 2014 but life got in the way and I&amp;rsquo;ve forgotten most of it, however, like all good developers I wrote myself some great documentation (not) so this should be a breeze right? (possibly not). Either way, I&amp;rsquo;ll try and make it easy to follow!
+To bring you up to speed, GDS built an application called Maslow to capture and manage the user needs that GOV.</description>
+    </item>
+    
+    <item>
+      <title>The challenge of definition</title>
+      <link>https://danblundell.com/2015/01/the-challenge-of-definition/</link>
+      <pubDate>Sat, 31 Jan 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://danblundell.com/2015/01/the-challenge-of-definition/</guid>
+      <description>Over the past few weeks we&amp;rsquo;ve been researching and designing the intranet for LGSS, the local government shared service and its multiple customers. One thing that became obvious very quickly is the contrast in language, terms and general vocabulary used in organisation. How do you approach that kind of issue? What other challenges does it stir up?
+The answers to those questions is something we&amp;rsquo;re yet to figure out but one thing thats come out of the work so far is a demonstration of how much of an issue definition and clarity is within the public sector.</description>
+    </item>
+    
+    <item>
+      <title>Personal hopes for 2015</title>
+      <link>https://danblundell.com/2015/01/personal-hopes-for-2015/</link>
+      <pubDate>Fri, 02 Jan 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://danblundell.com/2015/01/personal-hopes-for-2015/</guid>
+      <description>À la Dave Briggs, I didn&amp;rsquo;t want to make any resolutions this year (like Dave, I feel like making resolutions means failure) but what I did want to do is get down some hopes, aims and aspirations, so here goes;
+Write more, share more I would say I&amp;rsquo;m going to try and write every day this year, but we all know that&amp;rsquo;ll last about 3 days and sail off into the distance as a ridiculous pipe dream but one can try.</description>
+    </item>
+    
+    <item>
+      <title>Not a year in review post</title>
+      <link>https://danblundell.com/2015/01/not-a-year-in-review-post/</link>
+      <pubDate>Thu, 01 Jan 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://danblundell.com/2015/01/not-a-year-in-review-post/</guid>
+      <description>Each Christmas the usual songs get played on the radio and most people tend to get into the spirit of things. One of my particular favourites is Stop The Cavalry by Jona Lewie. I&amp;rsquo;ve no idea why it&amp;rsquo;s up there on my list as one of the great Christmas songs but one thing I will say is the &amp;lsquo;dab-a-dab-a-dums&amp;rsquo; get me every time, chuntering along I&amp;rsquo;ll sing like a wailing idiot in the car on the way home which helps me for a brief moment get over the frustrating and overwhelming time that is the Christmas holidays.</description>
+    </item>
+    
+    <item>
+      <title>Graham Williamson Research Award</title>
+      <link>https://danblundell.com/2014/11/graham-williamson-research-award/</link>
+      <pubDate>Wed, 26 Nov 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://danblundell.com/2014/11/graham-williamson-research-award/</guid>
+      <description>Back in September I applied for the Graham Williamson Research Award offered through Socitm. I was lucky enough to be chosen as the winner and was presented with the award at an awards dinner in October.
+My full proposal is available below and details the ideas and reasons behind the project. All in all I&amp;rsquo;m hoping to offer not only some research but create some practical outputs too and I&amp;rsquo;ll share everything in as many places as I can.</description>
+    </item>
+    
+    <item>
+      <title>Reusing GDS Assets</title>
+      <link>https://danblundell.com/2014/09/reusing-gds-assets/</link>
+      <pubDate>Tue, 30 Sep 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://danblundell.com/2014/09/reusing-gds-assets/</guid>
+      <description>This week we&amp;rsquo;ve been working on ways to improve the data we capture about users of our online services. We have reports coming out of our ears from phone systems, CRM systems, the CMS and Google analytics but one thing we haven&amp;rsquo;t been measuring until recently is how users flow through individual transactions online.
+A few months back I attended a Local Digital Campaign day about the GOV.UK Performance Platform and the exciting things that are being put together to better understand the performance of services.</description>
+    </item>
+    
+    <item>
+      <title>The Law of Two Feet</title>
+      <link>https://danblundell.com/2014/07/the-law-of-two-feet/</link>
+      <pubDate>Sun, 20 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://danblundell.com/2014/07/the-law-of-two-feet/</guid>
+      <description>To &amp;lsquo;be British&amp;rsquo; is often and stereotypically regarded as being overly polite and frustratingly apologetic; apologising when someone bumps into you, saying sorry for tripping over bag left in the aisle of a train and simply pretending you&amp;rsquo;ve heard what someone&amp;rsquo;s said because asking them to repeat it for a third time is just awkward.
+There&amp;rsquo;s a time and a place for this behaviour, I actually don&amp;rsquo;t mind it too much as it often keeps the world a bit more free flowing and easy to bare.</description>
+    </item>
+    
+    <item>
+      <title>Hack the hack day</title>
+      <link>https://danblundell.com/2014/06/hack-the-hack-day/</link>
+      <pubDate>Sun, 29 Jun 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://danblundell.com/2014/06/hack-the-hack-day/</guid>
+      <description>It&amp;rsquo;s been just over a week since the LocalGov Digital Makers hack day and the last few days have given me time to think things over in a bit more context.
+I enjoyed the hack day last week, it was a good experience and it&amp;rsquo;s kicked off some great projects that are all set to continue over the coming weeks and months, however, the LocalGov Digital Makers hack day didn&amp;rsquo;t have the same kind of output as a typical hack day.</description>
+    </item>
+    
+    <item>
+      <title>LocalGov Digital Makers Hack Day</title>
+      <link>https://danblundell.com/2014/06/localgov-digital-makers-hack-day/</link>
+      <pubDate>Fri, 20 Jun 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://danblundell.com/2014/06/localgov-digital-makers-hack-day/</guid>
+      <description>As a fringe event to LocalGovCamp the LocalGov Digital Makers hack day was set to be a chance for people to &amp;ldquo;prototype solutions to problems local government currently faces.&amp;rdquo; A great opportunity to see what we could come up with in just 5 hours, whether it be a technical prototype or presentation on the bigger picture to inform and give direction to some existing ideas.
+There were three challenges on offer; a combined local government search, a place to share and collaborate on schemas, documents and APIs and a digital inclusion challenge aimed at improving accesiblility to local government services.</description>
+    </item>
+    
+    <item>
+      <title>A sign of things to come?</title>
+      <link>https://danblundell.com/2014/06/a-sign-of-things-to-come/</link>
+      <pubDate>Thu, 12 Jun 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://danblundell.com/2014/06/a-sign-of-things-to-come/</guid>
+      <description>At the beginning of this week, Individual Electoral Registration went live on GOV.UK and I was quite surprised how underplayed this was in many Local Government circles.
+After seeing the launch promoted on twitter by Ben Terret I asked if the register to vote process was informing local registers. I hadn&amp;rsquo;t been involved in the implementation personally and I was curious how it all worked. In true GDS style, Ben got back to me in minutes and brought in Pete Herlihy on the conversation.</description>
+    </item>
+    
+    <item>
+      <title>Interactive Mapping</title>
+      <link>https://danblundell.com/2014/06/interactive-mapping/</link>
+      <pubDate>Mon, 09 Jun 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://danblundell.com/2014/06/interactive-mapping/</guid>
+      <description>Recently I was set the challenge of replacing an interactive mapping application that we ran for Northampton Borough Council. The product I was to replace had an annual support fee and upgrade cost attached to it and we were at a point where an alternative was needed.
+With no budget and a limited brief, prototyping something quickly and iterating seemed like a good plan; I&amp;rsquo;ve found it&amp;rsquo;s been easier for the product owner to critque and comment on something that they can play with and point at.</description>
+    </item>
+    
+    <item>
+      <title>Solving Amazon EC2 Memory Issues</title>
+      <link>https://danblundell.com/2014/04/solving-amazon-ec2-memory-issues/</link>
+      <pubDate>Wed, 30 Apr 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://danblundell.com/2014/04/solving-amazon-ec2-memory-issues/</guid>
+      <description>Often with the Amazon micro instances, and other instances with low memory allocations, your web server will &amp;lsquo;crash&amp;rsquo;, especially where MySQL&amp;rsquo;s involved. After a few page requests the MySQL engine can lock up because it doesn&amp;rsquo;t have enough memory.
+Amazons micro instances don&amp;rsquo;t come with any swap memory by default so if you experience issues and don&amp;rsquo;t want the costs of bumping your server to the next instance size, adding some swap space can improve performance of the micro instances no end:</description>
+    </item>
+    
+    <item>
+      <title>LAMP stack on Amazon EC2: Part 1</title>
+      <link>https://danblundell.com/2014/04/lamp-stack-on-amazon-ec2-part-1/</link>
+      <pubDate>Tue, 29 Apr 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://danblundell.com/2014/04/lamp-stack-on-amazon-ec2-part-1/</guid>
+      <description>Amazon Web Services offer a free tier of most of their services allowing you to host a full blown server in the cloud within their usage limits which can be pretty useful for trying things out and getting used to the options available without it costing you anything.
+The next few steps is the process I went through to set up an empty server on Amazon EC2.
+First, sign up to Amazon Web Services and head over to the EC2 pages from your services dashboard.</description>
+    </item>
+    
+    <item>
+      <title>LAMP stack on Amazon EC2: Part 2</title>
+      <link>https://danblundell.com/2014/04/lamp-stack-on-amazon-ec2-part-2/</link>
+      <pubDate>Tue, 29 Apr 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://danblundell.com/2014/04/lamp-stack-on-amazon-ec2-part-2/</guid>
+      <description>I&amp;rsquo;m kind of assuming you&amp;rsquo;ve set up an EC2 instance as per &amp;lsquo;Setting up your first EC2 instance,&amp;rsquo; or at least something similar.
+Now, we&amp;rsquo;ve got an EC2 instance up and running it&amp;rsquo;s time to make use of it.
+First we&amp;rsquo;ll install the bits and pieces we need to get going, Apache, MySQL and PHP.
+Install SSH into your instance using your key-pair file
+Now we want to tell yum to update all the packages currently installed, if you&amp;rsquo;re doing this step straight off the back of setting up your instance you won&amp;rsquo;t need to run this step again.</description>
+    </item>
+    
+    <item>
+      <title>What&#39;s all this about Channel Shift?</title>
+      <link>https://danblundell.com/2014/04/whats-all-this-about-channel-shift/</link>
+      <pubDate>Mon, 28 Apr 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://danblundell.com/2014/04/whats-all-this-about-channel-shift/</guid>
+      <description>Even before the publishing of the &amp;lsquo;Digital by Default&amp;rsquo; paper by Martha Lane-Fox, public services, particularly local authorities have embarked on a mission to &amp;lsquo;channel shift&amp;rsquo; their customers to more cost-effective means.
+— 2012 Socitm research  To put things in context, on average it costs local authorities £8.62 to deal with a person face-to-face, £2.83 on the phone but just £0.15 per digital transaction*.
+When you view things from a purely financial perspective, it seems obvious that you&amp;rsquo;d want more customers using the economically efficient online channels than you do coming through your doors to see someone face to face.</description>
+    </item>
+    
+    <item>
+      <title>Build a Java WAR file with Ant</title>
+      <link>https://danblundell.com/2014/04/build-a-java-war-file-with-ant/</link>
+      <pubDate>Tue, 22 Apr 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://danblundell.com/2014/04/build-a-java-war-file-with-ant/</guid>
+      <description>I&amp;rsquo;d never really used Ant build files directly until we moved to using Jenkins as a separate build server. Prior to moving to Jenkins we were just exporting our built projects from Eclipse and deploying a .war file directly into Tomcat.
+The interesting part came when we had to hand off the build step to Apache Ant because Eclipse was no longer responsible for building our projects. The team had grown, our code was now stored centrally and Eclipse became our development tool, TFS became our version control system and Apache Ant would build out the project on a remote server as an entirely separate process.</description>
+    </item>
+    
+  </channel>
+</rss>

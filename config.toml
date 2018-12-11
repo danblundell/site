@@ -1,0 +1,19 @@
+baseURL = "https://danblundell.com/"
+languageCode = "en-us"
+title = "Dan Blundell"
+theme = "hyde"
+googleAnalytics = "Your tracking code"
+
+#[menu]
+#  [[menu.main]]
+#    identifier = "blog"
+#    name = "Blog"
+#    title = "Blog"
+#    url = "/blog/"
+#    weight = -110
+
+[permalinks]
+  blog = "/:year/:month/:title/"
+[params]
+  themeColor = "theme-base-dan"
+  description = " "

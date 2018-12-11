@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.52" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>A sign of things to come? &middot; Dan Blundell</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Dan Blundell" />
+
+  
+</head>
+
+  <body class="theme-base-dan ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://danblundell.com/"><h1>Dan Blundell</h1></a>
+      <p class="lead">
+         
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://danblundell.com/">Home</a> </li>
+        
+      </ul>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>A sign of things to come?</h1>
+  <time datetime=2014-06-12T00:00:00Z class="post-date">Thu, Jun 12, 2014</time>
+  <p>At the beginning of this week, <a href="https://www.gov.uk/government/collections/individual-electoral-registration">Individual Electoral Registration</a> went live on <a href="https://www.gov.uk">GOV.UK</a> and I was quite surprised how underplayed this was in many Local Government circles.</p>
+
+<p>After seeing the launch promoted on twitter by <a href="https://twitter.com/benterret">Ben Terret</a> I asked if the register to vote process was informing local registers. I hadn&rsquo;t been involved in the implementation personally and I was curious how it all worked. In true GDS style, Ben got back to me in minutes and brought in <a href="https://twitter.com/yahoo_pete">Pete Herlihy</a> on the conversation. Pete was part of the team directly repsonsible for the register to vote process and responded with;</p>
+
+<blockquote class="twitter-tweet" data-conversation="none" lang="en"><p><a href="https://twitter.com/benterrett">@benterrett</a> <a href="https://twitter.com/danblundell">@danblundell</a> <a href="https://twitter.com/gdsteam">@gdsteam</a> Hi - yes, this is integrated with all of the local electoral registers.</p>&mdash; Pete Herlihy (@yahoo_pete) <a href="https://twitter.com/yahoo_pete/statuses/476334865198383104">June 10, 2014</a></blockquote>
+
+<p>Wow. This intrigued me more and I continued the conversation with Pete about how it&rsquo;s all working. After a few quick conversations internally and a message from <a href="https://twitter.com/philrumens">Phil Rumens</a> on the <a href="https://plus.google.com/communities/114124478761452023264">LocalGov Digital</a> boards, it came to light that the central <a href="https://www.gov.uk">GOV.UK</a> process validates with the DWP and then calls an api at the relative local authority over the <a href="https://www.gov.uk/public-services-network">Public Services Network</a> (PSN). Quite a complex set of technologies all working together to produce a seamlessly efficient transaction for the user.</p>
+
+<p>After a bit of thought, it struck me that this is actually more significant that it first appears.</p>
+
+<p>To my knowledge, this is the first end-to-end transactional process that uses PSN. As PSN is used more and more, I suspect we&rsquo;ll see a rise in the creative use of the network as a tool. A key thing about PSN is that it&rsquo;s described as a &ldquo;logical network based on industry standards&rdquo; which lends itself quite neatly to a Local GDS type idea. Although a Local GDS is a totally seperate topic altogether, the use of PSN to deliver integrated services across the country is incredibly exciting. As a supporting idea to this, <a href="https://twitter.com/_BforBen">Ben Cheetham</a> and I have been discussing some of the underlying systems thinking that could support this kind of cross-authority integration. Ben has also written <a href="https://ben.cheetham.me.uk/blog/2014/06/a-shared-web-platform-for-local-government/">a great post</a> that explains some of our ideas and what we&rsquo;re doing about them.</p>
+
+<p>The register to vote process as part of IER showcases how central policy and process can directly integrated into local authorities, it&rsquo;s not a huge leap to think that this could work the other way around. It stands to reason that if there were other api&rsquo;s at <a href="https://www.gov.uk">GOV.UK</a> to receive local information it could be &lsquo;standardised&rsquo; into a website all about <em>your</em> local services, no matter where you are. If that were to happen, it&rsquo;s arguable that Local GDS wouldn&rsquo;t even happen. Just think how many local authorities have recently had to update their own elections web pages to explain IER. With a central api at <a href="https://www.gov.uk">GOV.UK</a>, local information could be fed into a local.gov.uk website and the website could adapt it&rsquo;s content based on your location.</p>
+
+<p>I urge you to go and have a read of <a href="https://ben.cheetham.me.uk/blog/2014/06/a-shared-web-platform-for-local-government/">Ben&rsquo;s post</a> and please come and talk to us at the <a href="http://localgovdigital.info/news/makers-hack-day/">LocalGov Digital Makers Hackday</a> or <a href="http://localgovdigital.info/news/localgovcamp-2014/">LocalGov Camp</a>.</p>
+
+</div>
+
+
+    </main>
+
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'Your tracking code', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>

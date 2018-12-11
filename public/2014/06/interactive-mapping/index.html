@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.52" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Interactive Mapping &middot; Dan Blundell</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Dan Blundell" />
+
+  
+</head>
+
+  <body class="theme-base-dan ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://danblundell.com/"><h1>Dan Blundell</h1></a>
+      <p class="lead">
+         
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://danblundell.com/">Home</a> </li>
+        
+      </ul>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Interactive Mapping</h1>
+  <time datetime=2014-06-09T00:00:00Z class="post-date">Mon, Jun 9, 2014</time>
+  
+
+<p>Recently I was set the challenge of replacing an interactive mapping application that we ran for Northampton Borough Council. The product I was to replace had an annual support fee and upgrade cost attached to it and we were at a point where an alternative was needed.</p>
+
+<p>With no budget and a limited brief, prototyping something quickly and iterating seemed like a good plan; I&rsquo;ve found it&rsquo;s been easier for the product owner to critque and comment on something that they can play with and point at.</p>
+
+<p>Knowing the basic needs was pretty key;</p>
+
+<ul>
+<li>see a map of the town that can be dragged around and zoomed</li>
+<li>be able to view layers of information over the map</li>
+<li>be able to turn the layers of information on and off</li>
+<li>be able to select a point on the map and see information about that location</li>
+</ul>
+
+<p>On those four basic needs I began pulling together a quick page that did all of the above. I started with <a href="http://www.openlayers.org">OpenLayers</a> as it&rsquo;s a reasonably lightweight JavaScript framework with built in functions for connecting to all kinds of mapping services. To serve the mapping data, I fired up an instance of <a href="http://www.geoserver.org">Geoserver</a> as it was a well documented, well used and supported open source mapping server. As an added bonus Geoserver actually uses OpenLayers as a preview library so there&rsquo;s quite a bit of documentation on how to get Geoserver and OpenLayers working together.</p>
+
+<p>Once I&rsquo;d got a basic map going, we started to revisit some of the functionality available on neighbouring <a href="http://mapping.daventrydc.gov.uk/">Daventry District Council&rsquo;s mapping app</a>. Although there&rsquo;s some great functionality on Daventry&rsquo;s site, we weren&rsquo;t so keen on the loading progress bar or the tight window that the map had been placed in. So we wrote some new &lsquo;needs&rsquo; that weren&rsquo;t neccesarily true needs but they helped inform the design decisions:</p>
+
+<ul>
+<li>the map must be immersive and the main focus of the application</li>
+<li>the experience must not be interrupted unless a decision is required</li>
+</ul>
+
+<p>To this end, we made the map cover the whole screen ala <a href="http://www.google.com/maps">Google Maps</a> because it gives a clear indication of the primary function of the application, it also gives more room to view the map itself. I also reworked the loading of the information layers so that they loaded silently in the background on page load. The interface then updates in the background as each layer is retrieved from the server. The idea is that the user has an instant on/off experience with each layer because they&rsquo;ve been loaded on page load but they&rsquo;re also never interrupted.</p>
+
+<h3 id="go-slow-geoserver">Go-slow Geoserver</h3>
+
+<p>One of the things we found at this time was that Geoserver was great at serving the vector layers but really struggled with the base map raster layers. Even with compression quite high and pushing the server up a notch or two, the response times just weren&rsquo;t good enough and after about an hour of reasonable use, Geoserver fell over.</p>
+
+<p>I went on the hunt for an alternative and arrived on a revamped offering from Ordnance Survey, <a href="http://www.ordnancesurvey.co.uk/innovate/innovate-with-open-space.html">OS Open Space</a>.</p>
+
+<blockquote><p>OS OpenSpace provides a set of free services and tools to enable developers to create online and mobile applications using Ordnance Survey maps</p></blockquote>
+
+<p>&ldquo;OS OpenSpace provides a set of free services and tools to enable developers to create online and mobile applications using Ordnance Survey maps.&rdquo; OS Open Space is effectively another JavaScript framework and API. Thankfully OS OpenSpace is also based on OpenLayers which meant that we could not only use OS OpenSpace to serve the base maps directly from OS but we could also remove a seperate dependancy on OpenLayers itself.</p>
+
+<p>I swapped OpenLayers for OS OpenSpace and only had to amend a couple of lines before the whole thing was up and running smoother than ever. With the base map now being served from OS directly, the refresh rate was fast and the quality of the tiles themselves was far higher than we were able to produce ourselves.</p>
+
+<figure>
+    <img src="/img/content/interactive-mapping-1.png" alt="Screenshot of the mapping application">
+</figure>
+
+<p>The final piece of the puzzle after this was a property search. Being able to find a specific property or place on the map was one of the final key requirements for initial launch. After a bit of internal faffing about I managed to knock up a quick search API against a view of our LLPG and hook that API up to the map.</p>
+
+<p>The new mapping application will continue to be iterated on so who knows what&rsquo;s next. The current version is available to view <a href="http://mapping.northampton.gov.uk">here</a> and we&rsquo;ve made the front-end app available on <a href="https://github.com/lgss/interactive-mapping">Github</a> too. Feel free to fire any questions at me if you&rsquo;re looking to do a similar thing.</p>
+
+</div>
+
+
+    </main>
+
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'Your tracking code', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>

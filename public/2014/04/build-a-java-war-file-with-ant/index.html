@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.52" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Build a Java WAR file with Ant &middot; Dan Blundell</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Dan Blundell" />
+
+  
+</head>
+
+  <body class="theme-base-dan ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://danblundell.com/"><h1>Dan Blundell</h1></a>
+      <p class="lead">
+         
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://danblundell.com/">Home</a> </li>
+        
+      </ul>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Build a Java WAR file with Ant</h1>
+  <time datetime=2014-04-22T00:00:00Z class="post-date">Tue, Apr 22, 2014</time>
+  
+
+<p>I&rsquo;d never really used Ant build files directly until we moved to using Jenkins as a separate build server. Prior to moving to Jenkins we were just exporting our built projects from Eclipse and deploying a .war file directly into Tomcat.</p>
+
+<p>The interesting part came when we had to hand off the build step to Apache Ant because Eclipse was no longer responsible for building our projects. The team had grown, our code was now stored centrally and Eclipse became our development tool, TFS became our version control system and Apache Ant would build out the project on a remote server as an entirely separate process.</p>
+
+<blockquote><p>Apache Ant is a Java library and command-line tool whose mission is to drive processes described in build files as targets and extension points dependent upon each other.</p><b class="cite">From the <a href="http://ant.apache.org/" title="Apache Ant Documentation">Apache Ant Documentation</a></b></blockquote>
+
+<p>Essentially, the Ant library will follow a set of instructions in a specified configuration xml file called a build file. In our case, we&rsquo;re going to create a build file that will take a Java EE project and output a WAR file. In this instance, the WAR file we create will also include the source files for our project, this means that the WAR file can be imported back into Eclipse (or another IDE) should we need to edit it.</p>
+
+<p>Thankfully Ant doesn&rsquo;t rely on any particular project structure.  We&rsquo;re able to specify in our build file where the source files sit as well as how and where we want to output our compiled class files. The same goes for our assets and other resources, the beauty of Ant is that you point it in the right direction rather than it relying on you creating your project in a  certain way.</p>
+
+<p>To me, the core principle of Ant build files is that of the &lsquo;target.&rsquo; A target is a effectively a task, a small module of instructions that Ant will handle. You can link targets together by implementing a principle of dependencies which allows you to write small modules for handling individual aspects of a build and then link them together one after the other.</p>
+
+<h2 id="basic-build">Basic Build</h2>
+
+<p>The basic build file starts with creating a &lsquo;build.xml&rsquo; file, create a new xml file in your projects root directory, save it as &lsquo;build.xml.&rsquo;</p>
+
+<p>Now we know roughly what targets are, we&rsquo;re going to begin with the root xml node and a description and then implement our first target:</p>
+
+<p>{% highlight xml %}
+&lt;?xml version=&ldquo;1.0&rdquo; encoding=&ldquo;utf-8&rdquo; standalone=&ldquo;no&rdquo;?&gt;
+<project name="project-name" basedir="." default="war">
+    <description>
+        simple example build file
+    </description>
+</project>
+{% endhighlight %}</p>
+
+<p>This root node describes a couple of things, firstly the project name, typically the name of your application. The other attributes &lsquo;basedir&rsquo; and &lsquo;default&rsquo; specify the base directory of the project and the default target to run when Ant attempts to build this project.</p>
+
+<p>I tend to work from start to finish in terms of targets, looking at our project structure and beginning the build process from there.</p>
+
+<p>Our first target needs to include any libraries we may need, otherwise our code isn&rsquo;t going to have the libraries available when it comes to actually compiling the classes.</p>
+
+<p>So, we write our first target to create a directory to store all of our compiled files and then copy our source files into the new directory:</p>
+
+<p>{% highlight xml %}
+<project>&hellip;</p>
+
+<p><target name="init">
+    <mkdir dir="build/classes"/>
+    <copy includeemptydirs="false" todir="build/classes">
+        <fileset dir="src" />
+    </copy>
+</target></p>
+
+<p>&hellip;</project><br />
+{% endhighlight %}</p>
+
+<p>By giving the target a &lsquo;name&rsquo; we can refer to it from other targets, you&rsquo;ll see that in each of the targets we add. Inside the &lsquo;target&rsquo; node we place the instructions for Ant, in this case we&rsquo;re just saying &lsquo;make a new directory&rsquo; and then specifying the path of the new directory using the &lsquo;dir&rsquo; attribute.</p>
+
+<p>The &lsquo;copy&rsquo; element then tells Ant to copy files from one directory into another directory. In this case we&rsquo;re asking it to copy all files from our &lsquo;src&rsquo; directory into our new &lsquo;build/classes&rsquo; directory.</p>
+
+<p>Next we want to include any libraries our code needs to compile.  Remember, Ant is just going to read our instructions, if we don&rsquo;t tell it where things like libraries are, it&rsquo;ll fail. We&rsquo;ll include our &lsquo;lib&rsquo; directory like so:</p>
+
+<p>{% highlight xml %}
+&lt;project &hellip;</p>
+
+<p><path id="WebAppLibraries.libraryclasspath">
+    <fileset dir="WebContent/WEB-INF/lib">
+        <include name="**/*.jar"/>
+    </fileset>
+    <pathelement location="ImportedClasses"/>
+</path></p>
+
+<p>&hellip;</project>
+{% endhighlight %}</p>
+
+<p>Here we&rsquo;re creating a path reference to our library files stored in &lsquo;WEB-INF/lib&rsquo;, the include tag tells Ant to only care about .jar files. We&rsquo;ll include this path reference with some other libraries when we ask Ant to compile our code.</p>
+
+<p>In my project, I also have a set of required Tomcat libraries so I&rsquo;ll be including those, it&rsquo;s the same principle as the lib directory, this time we&rsquo;re including some external libraries from Tomcat:</p>
+
+<p>{% highlight xml %}
+&lt;project &hellip;</p>
+
+<p><property name="TOMCAT" value="${tomcatdir}"/></p>
+
+<p><path id="Apache Tomcat v7.0 [Apache Tomcat v7.0].libraryclasspath">
+    <pathelement location="${TOMCAT}/lib/annotations-api.jar"/>
+    <pathelement location="${TOMCAT}/lib/jsp-api.jar"/>
+    <pathelement location="${TOMCAT}/lib/servlet-api.jar"/>
+    <pathelement location="${TOMCAT}/lib/tomcat-api.jar"/>
+    <pathelement location="${TOMCAT}/lib/tomcat-coyote.jar"/>
+    <pathelement location="${TOMCAT}/lib/tomcat-jdbc.jar"/>
+    <pathelement location="${TOMCAT}/lib/tomcat-util.jar"/>
+    <pathelement location="${TOMCAT}/lib/tomcat7-websocket.jar"/>
+    <pathelement location="${TOMCAT}/lib/websocket-api.jar"/>
+</path></p>
+
+<p>&hellip;</project>
+{% endhighlight %}</p>
+
+<p>This is essentially the same as the last example, except you&rsquo;ll notice something slightly different here, the &lsquo;${TOMCAT}&rsquo; notation appears to have come out of nowhere. What I haven&rsquo;t mentioned until now is that Apache Ant allows you to declare &lsquo;property&rsquo; elements in your build file. Property tags act in a similar way to variables in your code, you can reference something by a name to retrieve its value. In the example above, &lsquo;${TOMCAT}&rsquo; references the property tag but the value of &lsquo;TOMCAT&rsquo; is &lsquo;${tomcatdir}&rsquo; what?! Well &lsquo;${tomcatdir}&rsquo; is passed in at run time, so when we tell Ant to build our project, we&rsquo;ll also have to tell it where our Tomcat directory is. The reason? Environment&rsquo;s are different, so when we move from one machine to another, we don&rsquo;t have to assume that Tomcat is in the same place.</p>
+
+<p>Thankfully we&rsquo;ve now included everything needed to build our project, however, we could tidy it up a bit since we have two class path references going, we should really combine them:</p>
+
+<p>{% highlight xml %}
+&lt;project &hellip;</p>
+
+<p><path id="my-project.classpath">
+    <pathelement location="build/classes"/>
+    <path refid="WebAppLibraries.libraryclasspath"/>
+    <path refid="Apache Tomcat v7.0 [Apache Tomcat v7.0].libraryclasspath"/>
+</path></p>
+
+<p>&hellip;</project>
+{% endhighlight %}</p>
+
+<p>That&rsquo;s it — a single path reference containing references to all the libraries we need to build our project.</p>
+
+<p>Now every thing&rsquo;s been included we can tell any to build the project files:</p>
+
+<p>{% highlight xml %}
+&lt;project &hellip;</p>
+
+<p><target depends="init" name="build-project">
+    <echo message="${ant.project.name}: ${ant.file}"/>
+    <javac debug="true" debuglevel="source,lines,vars" destdir="build/classes" includeantruntime="false" source="1.7" target="1.7">
+        <src path="src"/>
+        <classpath refid="my-project.classpath"/>
+    </javac>
+</target></p>
+
+<p>&hellip;</project>
+{% endhighlight %}</p>
+
+<p>This target will do the actual building of our project. Lets break it down a bit&hellip;</p>
+
+<ul>
+<li>depends=&ldquo;init&rdquo; tells the target that it requires a target called &lsquo;init&rsquo; to run before it can be run</li>
+<li>name=&ldquo;build-project&rdquo; is the name of this target which can be referenced from other targets as a dependency</li>
+<li>echo prints a message to the console so we know what&rsquo;s doing on, useful for debugging</li>
+<li>javac does the compiling, it has a &lsquo;destdir&rsquo; which sets where the classes will be compiled to, a &lsquo;source&rsquo; and &lsquo;target&rsquo; which state the java version expected at compile time and finally &lsquo;src&rsquo; and &lsquo;classpath&rsquo; set the source file directory and classpath path reference respectively.</li>
+</ul>
+
+<p>Finally, we want to output our WAR file:</p>
+
+<p>{% highlight xml %}
+&lt;project &hellip;</p>
+
+<p><target name="war" depends="build-project">
+    <mkdir dir="WebContent/WEB-INF/classes"/></p>
+
+<pre><code>&lt;copy includeemptydirs=&quot;false&quot; todir=&quot;WebContent/WEB-INF/classes&quot;&gt;
+        &lt;fileset dir=&quot;build/classes&quot; /&gt;
+&lt;/copy&gt;
+&lt;fileset dir=&quot;src&quot;&gt;
+    &lt;include name=&quot;**/*.*&quot;/&gt;
+&lt;/fileset&gt;
+
+&lt;war destfile=&quot;${warfilename}&quot;
+    basedir=&quot;WebContent&quot; webxml=&quot;WebContent/WEB-INF/web.xml&quot;&gt;
+&lt;/war&gt;
+</code></pre>
+
+<p></target></p>
+
+<p>&hellip;</project>
+{% endhighlight %}</p>
+
+<p>That&rsquo;s the last piece of the puzzle. &lsquo;mkdir&rsquo; creates an output directory for the compiled class files and the following &lsquo;copy&rsquo; tag moves everything from our &lsquo;build/classes&rsquo; directory into the final &lsquo;classes&rsquo; directory in our WEB-INF folder.</p>
+
+<p>We then include everything from &lsquo;src&rsquo; because if we want to reimport this war file into Eclipse for editing, we&rsquo;ll need the original source files.</p>
+
+<p>Finally the &lsquo;war&rsquo; element tells Ant to zip everything up into a war file, we tell Ant what to call the war file, the base directory to use and where the web.xml config file is.</p>
+
+<p>If you&rsquo;re keen-eyed, you&rsquo;ll notice that the name of the war file is another run time variable ${warfilename}. This simply allows us to decide the name of the war file each time we run the build. It&rsquo;s great for us because we append the version name from our VCS at build time so that we know which war file was created by which change for easy rollbacks.</p>
+
+<h3 id="running-the-build">Running the Build</h3>
+
+<p>You can run the build from the command line, assuming you&rsquo;ve got Apache Ant installed fire up terminal and head to your projects directory. The line we&rsquo;ll need is</p>
+
+<p>{% highlight bash %}
+build -buildfile build.xml -Dtomcatdir=path/to/tomcat -Dwarfilename=name-of-warfile.war
+{% endhighlight%}</p>
+
+<p>Once you run the command, Ant will take over and read our build file. Ant will register all the &lsquo;property&rsquo; values and run the &lsquo;default&rsquo; target at from the &lsquo;project&rsquo; tag. In this case the &lsquo;war&rsquo; target gets called first but that has a dependency on the &lsquo;build-project&rsquo; target so that gets called. The &lsquo;build-project&rsquo; target has a dependency on the &lsquo;init&rsquo; target so that gets called. Once each target completes, Ant falls back up the chain to finally output our warfile contain both our source and compiled code.</p>
+
+<p>That&rsquo;s it! Hopefully that gives you some idea of how Apache Ant can help you build your projects, by setting up a build file you have an opportunity to have a consistent shared build method that can easily be migrated to a remote server, should you need to.</p>
+
+</div>
+
+
+    </main>
+
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'Your tracking code', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>

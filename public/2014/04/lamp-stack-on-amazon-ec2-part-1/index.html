@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.52" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>LAMP stack on Amazon EC2: Part 1 &middot; Dan Blundell</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Dan Blundell" />
+
+  
+</head>
+
+  <body class="theme-base-dan ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://danblundell.com/"><h1>Dan Blundell</h1></a>
+      <p class="lead">
+         
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://danblundell.com/">Home</a> </li>
+        
+      </ul>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>LAMP stack on Amazon EC2: Part 1</h1>
+  <time datetime=2014-04-29T00:00:00Z class="post-date">Tue, Apr 29, 2014</time>
+  
+
+<p>Amazon Web Services offer a free tier of most of their services allowing you to host a full blown server in the cloud within their usage limits which can be pretty useful for trying things out and getting used to the options available without it costing you anything.</p>
+
+<p>The next few steps is the process I went through to set up an empty server on Amazon EC2.</p>
+
+<p>First, sign up to Amazon Web Services and head over to the EC2 pages from your services dashboard.</p>
+
+<p>Amazon splits it&rsquo;s EC2 service into a few different sections so I want to clarify a few bits of terminology in a way that makes sense to me, they may not be the best technical description but ti&rsquo;s the easiest way I managed to get my ahead around this stuff so:</p>
+
+<ul>
+<li><p><strong>Instances:</strong> AWS EC2 &lsquo;instances&rsquo; are the server itself, the processor, the memory and so forth. This is the &lsquo;machine&rsquo; that&rsquo;s  server. They can be started, restarted, stopped, terminated and upgraded like a physical box can.</p></li>
+
+<li><p><strong>Volumes:</strong> AWS EC2 can be tied to an Elastic Block Storage &lsquo;volume&rsquo; which is essentially a separate storage drive for the server. I say &lsquo;can be tied to&rsquo; because a volume is not always tied to an instance but as you become familiar with the structure, it&rsquo;ll become clear how and why this is the case. I recommend running volumes because they allow you to separate the data storage part of your server from the moving parts of the instance. Volumes can be attached and detached from instances in the same way you&rsquo;d plug in and unplug a drive from a regular computer. Volumes can also have snapshots taken of them and be used to launch new instances.</p></li>
+
+<li><p><strong>Security Groups:</strong> All amazon instances are locked down by default and security groups allow you to manage firewall permissions separately from your actual server which means they&rsquo;re instantly reusable on multiple instances. This gives you both reassurance and scalability. Adding the same set of firewall permissions to instances is ridiculously simple because you only need set them up the once. Second, if you want to update firewall permissions for all your instances, you only have to change the security group settings and the new settings will be applied to all instances associated with that group.</p></li>
+
+<li><p><strong>Key-Pairs:</strong> EC2 instances don&rsquo;t have a typical username / password log in, instead you use a generated key-pair. You generate a key-pair within your EC2 dashboard and save the generated key-file somewhere safe. The important thing to note about key-pairs is that you cannot re-download the generated key file, it&rsquo;s a one time thing. If you lose your key-file you have to generate a new one. Equally, when you create an instance you&rsquo;ll be asked to specify a key-pair, the key-pair you select cannot be changed once the instance is launched. The key pair is the only way you can log into your instance so don&rsquo;t lose it! You can generate as many key pairs as you like so how you manage the key-files and instances is up to you.</p></li>
+
+<li><p><strong>Elastic IP:</strong> A static IP that you can point your domain DNS towards and then from within EC2 you can reassign your Elastic IP to a server in about 3 seconds flat. This is great if you have a problem with your current instance and need to launch a new one quickly, no DNS propagation to wait for just launch the new instance and attach your Elastic IP to the new instance and your site is live. Other scenarios include zero risk, zero downtime CMS upgrades. You can create a duplicate of an existing server, perform the upgrade and test it and simply repoint the elastic IP when you&rsquo;re happy.</p></li>
+</ul>
+
+<p>The first thing we&rsquo;re going to want to actually do is some prep work for make the process of launching servers and their  configurations a bit easier.</p>
+
+<h2 id="security-groups">Security Groups</h2>
+
+<p>If we actually want to use our server once it&rsquo;s created, we need some firewall rules that are going to let us in. For this guide we only want http (port 80) and ssh (port 22) as anything more just means more to think about.</p>
+
+<p>Fire up your EC2 dashboard in the browser and head over to the &lsquo;Security Groups&rsquo; section from the left hand side under &lsquo;Network and Security.&rsquo;</p>
+
+<p>Once you&rsquo;ve got the Security Groups tab open, select &lsquo;Create Security Group.&rsquo; The dashboard will open an overlay where you&rsquo;ll need to enter a name and description. I&rsquo;m using &lsquo;Web Server&rsquo; as a name and description.</p>
+
+<p>To enable inbound traffic to the server, we&rsquo;ll need to add inbound traffic rules. In the lower &lsquo;Security group rules&rsquo; section select the &lsquo;Add Rule&rsquo; button and a new row will be added. Under &lsquo;Type&rsquo; Amazon now gives you a helpful dropdown list of port options to select from which is a nice touch, we want to add &lsquo;HTTP&rsquo; so that people can view our web pages. We&rsquo;ll then need to hit &lsquo;Add Rule&rsquo; again but this time select &lsquo;SSH&rsquo; so that we can log into the instance over SSH.</p>
+
+<p>The security group does allow you to specify a few other options like &lsquo;Source&rsquo; which lets you restrict where traffic is coming from but for now, HTTP and SSH should do us fine.</p>
+
+<p>We can reuse this security group across servers so it&rsquo;s good to keep things generic at this point.</p>
+
+<h2 id="key-pair">Key-Pair</h2>
+
+<p>Amazon actually has two types of key/pair but for this process we only need be concerned with the more obvious one, server key pairs.</p>
+
+<p>We need to remember that AWS will only let you log into a server via SSH with the correct key-pair for an instance. This is pretty important as we can&rsquo;t regenerate or redownload key-pairs once we&rsquo;ve got them and we can&rsquo;t change the key-pair for an instance without relaunching it as a new instance, so in short; we don&rsquo;t want to it the generated key-file at the end of this process.</p>
+
+<p>To generate a key-pair, head to the &lsquo;Key Pairs&rsquo; section of the EC2 dashboard under &lsquo;Network and Security&rsquo; and hit the &lsquo;Create Key Pair&rsquo; button.</p>
+
+<p>Name the key-pair something sensible, I&rsquo;m using &lsquo;development&rsquo; as my key-pair name. Follow the process, download the key-file and save it somewhere safe on your machine, you&rsquo;ll need it later.</p>
+
+<p>Again it&rsquo;s a good idea to keep things generic at first to save going through this process for each server you launch, especially while you&rsquo;re getting used to how EC2 works, it just saves a lot of messing about.</p>
+
+<p>Now we have a security group and a key pair generated, we can start the process of creating our server.</p>
+
+<p>Head over to the &lsquo;Instances&rsquo; tab and we&rsquo;ll get going.</p>
+
+<h2 id="launch-your-first-instance">Launch your first Instance</h2>
+
+<p>Lets start with the big &lsquo;Launch Instance&rsquo; button, it&rsquo;ll start the EC2 wizard for creating a new server. We&rsquo;re only interested in the free tier so head on and click select next to the &lsquo;Micro Linux 64bit AMI.&rsquo; The &lsquo;AMI&rsquo; part stands for &lsquo;Amazon Machine Image&rsquo; and is a group of preconfigured settings for the instance, which processor / how much memory etc.</p>
+
+<p>Next we get the opportunity to configure the instance, select &lsquo;Next: Configure Instance Details.&rsquo; Here you get to choose things like, how many instances we&rsquo;re launching (1 is fine) and the availability zone of the instance, since I&rsquo;m in Europe, I&rsquo;m selecting EU-West-1a. You can just choose a zone nearest you.</p>
+
+<p>Ignore IAM roles, that&rsquo;s a whole other topic and isn&rsquo;t relevant at this point.</p>
+
+<p>The final options for this section are around shutdown behaviour and termination. I tend to always leave shutdown behaviour on &lsquo;stop&rsquo; as we then have the option to start and stop and instance as we like. If we selected &lsquo;terminate&rsquo; the instance would disappear and we wouldn&rsquo;t be able to bring it back up. Also check the &lsquo;protect against accidental termination&rsquo; box which will save us accidental killing off the server. Don&rsquo;t worry about cloud watch monitoring for now as it takes us outside the free tier.</p>
+
+<p>Once you&rsquo;re done, select &lsquo;Add Storage.&rsquo; We&rsquo;re adding a separate storage volume because storage on the instance itself is only temporary and is lost when the instance is stopped, whereas storage on a volume allows us to handle our data independent of the instance. Think of a volume as a disk drive, we want to be able to keep our data even if the server is shut down.</p>
+
+<p>Free tier storage is 30gb but just set an amount that you&rsquo;re actually going to need, I generally choose around 8/10gb and uncheck the &lsquo;delete on termination&rsquo; option. This allows us to terminate our instance but keep hold of our storage volume, great for replicating our data across multiple availability zones or simply launching a test server using the current volume as a template.</p>
+
+<p>The final steps to getting the server launched are tagging the instance and applying our security settings so go ahead and click &lsquo;Tag Instance.&rsquo;</p>
+
+<p>Here we get to pick a name for our server, something you&rsquo;re going to recognise the server as. It could be an application name, a domain name or simply &lsquo;dev server&rsquo; - whatever you like. Once you&rsquo;ve added a name, click &lsquo;Next: Configure Security Group&rsquo;</p>
+
+<p>We&rsquo;ve already set up a security group so we can simply choose &lsquo;Select and existing security group&rsquo; and check the box next to our &lsquo;Web Server&rsquo; security group.</p>
+
+<p>Finally we click &lsquo;Review and Launch&rsquo; which offers us the last option of choosing our key-pair or generating a new key-pair. We&rsquo;ve already got our key-pair to hand to select &lsquo;Choose an existing key-pair&rsquo; and select &lsquo;development&rsquo; or whatever you called your key-pair and hit that launch button.</p>
+
+<p>Amazon will whirl away for a while spinning up an instance and a  volume for us and once it&rsquo;s done the main &lsquo;Instances&rsquo; page will say &lsquo;running&rsquo;</p>
+
+<h2 id="so-my-instance-is-running-how-do-i-get-onto-it">So my instance is running, how do I get onto it?</h2>
+
+<p>This is something that was quite baffling to me at first, I had a server, I had all these settings but how the heck did I use the server?! Thankfully it&rsquo;s actually quite simple, one SSH command gets you in and then you&rsquo;re free to do as you wish.</p>
+
+<p>So what is it? Well, fire up terminal and change to the directory you put your key pair file in so for me that would be something like:</p>
+
+<p>{% highlight bash %}
+cd ~/Documents/keys/amazon
+{% endhighlight %}
+Then we want to SSH to the server using a the key file as our authentication so for me that would be:
+{% highlight bash %}
+ssh -i development.pem ec2-user@amazon-dns-path-goes-here
+{% endhighlight %}</p>
+
+<p>The ec2-user is the default user for all Amazon Machine Images (AMIs) so you can use that, however, the amazon public DNS path is specific to your instance. As a helpful addition it&rsquo;s actually listed on your &lsquo;Instances&rsquo; page in the browser, just tick the box on the left of your newly launched instance and scroll through the lower pane of the page until you see &lsquo;Public DNS.&rsquo; Copy and paste it the value into the terminal.</p>
+
+<p>Once you hit enter, you&rsquo;ll be connected to your instance and there&rsquo;ll be a nice little message from Amazon to tell you you&rsquo;re in.</p>
+
+<p>As a final point, I tend to run &lsquo;sudo yum update -y&rsquo; immediately, just to update the server to the latest version of any installed packages.</p>
+
+<p>That&rsquo;s it, you&rsquo;re done! An AWS EC2 instance launched with a EB Volume for storage. The server&rsquo;s all yours to do whatever you like with, if you&rsquo;re at a loose end and want to set the server up as a LAMP stack, you can follow the next tutorial where I&rsquo;ll take you through installing apache, mysql and php as well as making the most of the micro instance by introducing a bit of additional memory.</p>
+
+</div>
+
+
+    </main>
+
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'Your tracking code', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.52" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>LocalGov Digital Makers Hack Day &middot; Dan Blundell</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Dan Blundell" />
+
+  
+</head>
+
+  <body class="theme-base-dan ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://danblundell.com/"><h1>Dan Blundell</h1></a>
+      <p class="lead">
+         
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://danblundell.com/">Home</a> </li>
+        
+      </ul>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>LocalGov Digital Makers Hack Day</h1>
+  <time datetime=2014-06-20T00:00:00Z class="post-date">Fri, Jun 20, 2014</time>
+  
+
+<p>As a fringe event to <a href="http://localgovdigital.info/localgovcamp/">LocalGovCamp</a> the <a href="http://localgovdigital.info/localgov-digital-makers/">LocalGov Digital Makers</a> hack day was set to be a chance for people to &ldquo;prototype solutions to problems local government currently faces.&rdquo; A great opportunity to see what we could come up with in just 5 hours, whether it be a technical prototype or presentation on the bigger picture to inform and give direction to some existing ideas.</p>
+
+<p>There were three challenges on offer; a combined local government search, a place to share and collaborate on schemas, documents and APIs and a digital inclusion challenge aimed at improving accesiblility to local government services.</p>
+
+<p>I opted for challenge two and quickly got talking to a group in the middle of the room about what we might be able to produce. It seemed a more practical challenge to pull together code-based projects. <a href="http://github.com">Github</a> already provides a developer friendly platform for sharing code but it doesn&rsquo;t provide some of the data around the edges that would allow us to curate code for a government oriented navigation.</p>
+
+<p>The broader side of this problem is the one where organisations share their customer service strategy or their social media guidelines; how do we curate those in a way that allows for a similar topic and service navigation?</p>
+
+<blockquote><p>How do we curate things in a way that allows for a government oriented navigation?</p></blockquote>
+
+<p>It seemed that the two sides of the coin could have the same solution if it were done right but it wasn&rsquo;t something we were going to be able to put together in 5 hours. We didn&rsquo;t understand the user needs, we didn&rsquo;t have time to really explore what the wider uses were, we just had a lot of ideas and assumptions. After a short time, the group split to concentrate on the problems in their own right.</p>
+
+<h3 id="curating-code">Curating Code</h3>
+
+<p>As part of the group pulling together projects from Github, <a href="https://twitter.com/pmackay">Paul Mackay</a> introduced us to <a href="https://github.com/BetaNYC/civic.json">civic.json</a>, a project designed to attach metadata to civic projects. The principle is simple, you place one extra file in your project and in that file you put some information that describes the project.</p>
+
+<p>The idea is that the <a href="https://github.com/BetaNYC/civic.json">civic.json</a> file contains the same set of standard data in all projects so that other applications can be built to interpret that data, however, the original civic.json structure isn&rsquo;t yet confirmed and we felt that for the things <em>we</em> wanted to do, it didn&rsquo;t contain the right sort of data. So we <a href="https://github.com/danblundell/civic.json">forked the project</a> and started adapting it.</p>
+
+<p>While <a href="https://twitter.com/pmackay">Paul</a> and I got on with refining the data, <a href="https://twitter.com/pezholio">Stuart Harrison</a> and <a href="https://twitter.com/codeandstuff">Stuart Carruthers</a> fired up a rails project to build something that could find projects in Github that contained our <a href="https://github.com/danblundell/civic.json">new civic.json</a> data. This later became the <a href="http://lgprojects.herokuapp.com/">LG Projects</a> app.</p>
+
+<p>We&rsquo;re still refining the adaptation of civic.json. We&rsquo;re going back and working out what sort of things we&rsquo;d like to do when curating the projects in terms of filtering, searching and such but changes are all public and if you&rsquo;d like to contribute or have an idea for its use, <a href="http://twitter.com/danblundell">get in touch</a></p>
+
+<p>The <a href="http://lgprojects.herokuapp.com/">LG Projects</a> app is built to query the Github API, it filters project via the github for government in the UK and currently displays all projects but shows extra information if a project contains a civic.json file. Examples include; <a href="http://lgprojects.herokuapp.com/authorities/lichfield-district-council">Ratemyplace</a> from <a href="https://www.lichfielddc.gov.uk/">Litchfield District Council</a> and <a href="http://lgprojects.herokuapp.com/authorities/guildfordbc">Web.Elmah</a> by <a href="http://www.guildford.gov.uk/">Guildford Borough Council</a> both of which members of the group had access to and were able to add files to on the day.</p>
+
+<p>We&rsquo;re continuing with this idea and hoping that as we refine the standard a bit more, others will be inspired to tag their project with a civic.json file and we can make some of these great projects more readily available.</p>
+
+<h3 id="documenting-documents">Documenting Documents</h3>
+
+<p>The other side of this challenge was about making it easier to curate and find documents. Many organisations publish case studies, guidelines and strategy documents that others could learn from but a majority of these useful things are buried in the organisations own website. Urls are inconsistent and the document is almost always published as a Word Document or PDF because that&rsquo;s what non-developers (regular folk!) use. How do you pull all these documents together so that they can be navigated and searched in a sensible manner? That&rsquo;s exactly what another group led by <a href="https://twitter.com/LindaSasta">Linda O&rsquo;Halloran</a> explored.</p>
+
+<p>There&rsquo;s bound to be more from all these ideas and I&rsquo;ll be sure to try and publish, post and comment on anything I find via <a href="https://twitter.com/danblundell">my Twitter account</a> so <a href="https://twitter.com/danblundell">follow me</a> to keep up to date</p>
+
+</div>
+
+
+    </main>
+
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'Your tracking code', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>

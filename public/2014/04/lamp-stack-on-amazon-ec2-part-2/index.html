@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.52" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>LAMP stack on Amazon EC2: Part 2 &middot; Dan Blundell</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://danblundell.com/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Dan Blundell" />
+
+  
+</head>
+
+  <body class="theme-base-dan ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://danblundell.com/"><h1>Dan Blundell</h1></a>
+      <p class="lead">
+         
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://danblundell.com/">Home</a> </li>
+        
+      </ul>
+    </nav>
+
+    <p>&copy; 2018. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>LAMP stack on Amazon EC2: Part 2</h1>
+  <time datetime=2014-04-29T00:00:00Z class="post-date">Tue, Apr 29, 2014</time>
+  
+
+<p>I&rsquo;m kind of assuming you&rsquo;ve set up an EC2 instance as per &lsquo;Setting up your first EC2 instance,&rsquo; or at least something similar.</p>
+
+<p>Now, we&rsquo;ve got an EC2 instance up and running it&rsquo;s time to make use of it.</p>
+
+<p>First we&rsquo;ll install the bits and pieces we need to get going, Apache, MySQL and PHP.</p>
+
+<h2 id="install">Install</h2>
+
+<p>SSH into your instance using your key-pair file</p>
+
+<p>Now we want to tell yum to update all the packages currently installed, if you&rsquo;re doing this step straight off the back of setting up your instance you won&rsquo;t need to run this step again.</p>
+
+<p>{% highlight bash %}
+sudo yum update -y
+{% endhighlight %}</p>
+
+<p>The -y flag just says &lsquo;install all updates without prompting me to decide,&rsquo; it saves you having to say yes to each update.</p>
+
+<p>Now we want to install apache but we know we need MySQL and PHP, may aswell do the lot together.</p>
+
+<p>{% highlight bash %}
+sudo yum groupinstall -y &ldquo;Web Server&rdquo; &ldquo;MySQL Database&rdquo; &ldquo;PHP Support&rdquo;
+{% endhighlight %}</p>
+
+<p>Again -y says, &lsquo;yes please install all packages without prompting me.&rsquo; Yum will run the install for all the dependencies for a web server (Apache) MySQL and PHP which is nice and convenient.</p>
+
+<p>Once Yum has finished doing its thing, we want to install the php-mysql package which doesn&rsquo;t come as part of the group install.</p>
+
+<p>{% highlight bash %}
+sudo yum install -y php-mysql
+{% endhighlight %}</p>
+
+<p>Once that&rsquo;s all done, we can start our newly installed Apache install</p>
+
+<p>{% highlight bash %}
+sudo service httpd start
+{% endhighlight %}</p>
+
+<p>We should then get confirmation that Apache has started, however, starting Apache manually means that each time the server restarts, we&rsquo;d have to log in and start Apache ourselves. A better option is to have the server start Apache itself using the config parameters.</p>
+
+<p>To have Apache start on boot, run:</p>
+
+<p>{% highlight bash %}
+sudo chkconfig httpd on
+{% endhighlight %}</p>
+
+<p>Once Apache&rsquo;s running you can check everything&rsquo;s okay by putting your Amazon Public DNS path into a browser, you should see an Amazon Apache test page (providing you&rsquo;ve not yet put anything in /var/www/html).</p>
+
+<p>Now we&rsquo;re up and running with Apache, it&rsquo;s probably best to give some permissions to our ec2-user so that we can copy files into the /var/www directory without any permissions issues.</p>
+
+<p>If you run the following:</p>
+
+<p>{% highlight bash %}
+ls -l /var/www
+{% endhighlight %}</p>
+
+<p>You&rsquo;ll see that the root user owns the web root directory. Not ideal as you&rsquo;d have to have root/su permissions to manipulate files in there which will prevent things like FTP/SFTP transfers.</p>
+
+<p>First things first, we&rsquo;ll create a www group
+{% highlight bash %}
+sudo groupadd www
+{% endhighlight %}</p>
+
+<p>Then we&rsquo;ll add our ec2-user to that group</p>
+
+<p>{% highlight bash %}
+sudo usermod -a -G www ec2-user
+{% endhighlight %}</p>
+
+<p>To pick up our new group we have to exit and log back in so run</p>
+
+<p>{% highlight bash %}
+exit
+{% endhighlight %}</p>
+
+<p>Then log back into your instance and run</p>
+
+<p>{% highlight bash %}
+groups
+{% endhighlight %}</p>
+
+<p>You&rsquo;ll then see &lsquo;www&rsquo; as one of the listed groups for ec2-user.</p>
+
+<p>Now that we&rsquo;re part of the www group, we want to set the group permissions of the web root directory to that www group, rather than root. We want to do it recursively too so we&rsquo;ll add in the -R flag.</p>
+
+<p>{% highlight bash %}
+sudo chown -R root:www /var/www
+{% endhighlight %}</p>
+
+<p>Now we need to change the web root directory permissions and its subdirectories so that the www group has write permissions</p>
+
+<p>{% highlight bash %}
+sudo chmod 2775 /var/www
+{% endhighlight %}</p>
+
+<p>We also need to set the same permissions for any future subdirectories</p>
+
+<p>{% highlight bash %}
+find /var/www -type d -exec sudo chmod 2775 {} +
+{% endhighlight %}</p>
+
+<p>Then we do the same for files within those directories and subdirectories</p>
+
+<p>{% highlight bash %}
+find /var/www -type f -exec sudo chmod 0664 {} +
+{% endhighlight %}</p>
+
+<p>Now we&rsquo;re all set up to put some files into the web root directory with the correct permissions, to check every things okay we can put in a quick PHP info file that&rsquo;ll give us the usual PHP install information. We&rsquo;ll quickly create a file, drop in the phpinfo statement and go and view the file on the server to check apache and php are both installed and running correctly.</p>
+
+<p>To create the file and populate it with the phpinfo statement run:</p>
+
+<p>{% highlight bash %}
+echo &ldquo;&lt;?php phpinfo.php; ?&gt;&rdquo; /var/www/html/phpinfo.php
+{% endhighlight %}</p>
+
+<p>Now head over to your public dns address in the browser but this time append phpinfo.php to your url</p>
+
+<p><strong><a href="http://your-amazon-public-dns/phpinfo.php">http://your-amazon-public-dns/phpinfo.php</a></strong></p>
+
+<p>You should see a PHP info page, listing out all the installed modules and so forth. Pretty easy eh.</p>
+
+<p>We don&rsquo;t really want this information hanging about on the server for anyone to view so we&rsquo;ll get rid of that file with a simple command:</p>
+
+<p>{% highlight bash %}
+rm /var/www/html/phpinfo.php
+{% endhighlight %}</p>
+
+<p>Done.</p>
+
+<p>Last thing we need to do to finish the install is secure MySQL, so here goes&hellip;</p>
+
+<p>{% highlight bash %}
+sudo service mysqld start
+{% endhighlight %}</p>
+
+<p>MySQL will start and you&rsquo;ll get some shouty messsage about setting a password for your mysql root user etc but we&rsquo;ll get to that in a second.</p>
+
+<p>First run</p>
+
+<p>{% highlight bash %}
+sudo mysql_secure_installation
+{% endhighlight %}</p>
+
+<p>You&rsquo;ll now be taken through a series of steps to securing the mysql installation:</p>
+
+<ol>
+<li><p>You&rsquo;ll be asked for the password for the root account, there isn&rsquo;t one by default so just hit enter</p></li>
+
+<li><p>Next it&rsquo;ll ask if you want to set a password, hit &lsquo;Y&rsquo; and now you need to enter a password for your root mysql user. You&rsquo;ll need to type it in twice just to be sure.</p></li>
+
+<li><p>Then type &lsquo;Y&rsquo; to remove Anonymous user accounts</p></li>
+
+<li><p>Then type &lsquo;Y&rsquo; to remove remote login, that way you have to be on the server to log into mysql, just another layer of security for us.</p></li>
+
+<li><p>Then type &lsquo;Y&rsquo; again to remove the test database.</p></li>
+
+<li><p>Finally type &lsquo;Y&rsquo; again to reload the privileged&rsquo;s and save everything you&rsquo;ve just done.</p></li>
+</ol>
+
+<p>You can then start and stop the mysqld service as and when you&rsquo;d like with:</p>
+
+<p>{% highlight bash %}
+sudo service mysqld start|stop
+{% endhighlight %}</p>
+
+<p>In the same way we set Apache to start on system boot, we can set MySQL to do the same thing, this is good for things like CMS installs that rely on the database to be available (Drupal / WordPress etc).</p>
+
+<p>{% highlight bash %}
+sudo chkconfig mysqld on
+{% endhighlight %}</p>
+
+<p>That&rsquo;s everything installed. Apache web server is running with the web root as /var/www/html so you can pop your website file in that directory and MySQL is running so you can install your database too.</p>
+
+</div>
+
+
+    </main>
+
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'Your tracking code', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>
