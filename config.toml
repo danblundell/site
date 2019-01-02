@@ -1,7 +1,7 @@
 baseURL = "https://www.danblundell.com/"
 languageCode = "en-us"
 title = "Dan Blundell"
-theme = "hyde"
+theme = "hyde-theme"
 googleAnalytics = "UA-43692868-1"
 pygmentsStyle = "dracula"
 [menu]
