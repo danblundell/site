@@ -3,17 +3,26 @@ languageCode = "en-us"
 title = "Dan Blundell"
 theme = "hyde"
 googleAnalytics = "UA-43692868-1"
-
-#[menu]
-#  [[menu.main]]
-#    identifier = "blog"
-#    name = "Blog"
-#    title = "Blog"
-#    url = "/blog/"
-#    weight = -110
+pygmentsStyle = "dracula"
+[menu]
+  [[menu.main]]
+    identifier = "blog"
+    name = "Blog"
+    title = "Blog"
+    url = "/blog/"
+    weight = 1000
+  #[[menu.main]]
+  #  identifier = "weeknotes"
+  #  name = "Weeknotes"
+  #  title = "Weeknotes"
+  #  url = "/weeknotes/"
+  #  weight = -110
+  
 
 [permalinks]
   blog = "/:year/:month/:title/"
+  weeknotes = "weeknotes/:year/week-:slug/"
 [params]
   themeColor = "theme-base-dan"
   description = " "
+
