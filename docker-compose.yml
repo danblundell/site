@@ -2,6 +2,7 @@ version: "3.7"
 
 services:
   blog:
+    container_name: danblundell_blog
     image: monachus/hugo
     ports:
     - "1313:1313"
