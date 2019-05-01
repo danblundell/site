@@ -6,7 +6,7 @@ date: "2019-01-02"
 meta: ""
 ---
 
-We had a problem recently where a WordPress site that used an AWS Application Load Balancer didn't load over HTTPS. We kept seeing alot of `mixed-content:blocked` errors when the site loaded and even though all the usual settings within WordPress were set to use HTTPS, things like JavaScript files and stylesheets were still being requested over http.
+You had a problem recently where a WordPress site that used an AWS Application Load Balancer didn't load over HTTPS. We kept seeing alot of `mixed-content:blocked` errors when the site loaded and even though all the usual settings within WordPress were set to use HTTPS, things like JavaScript files and stylesheets were still being requested over http.
 
 ## Context
 We'd set up our application load balancer to serve HTTPS (port 443) traffic to the client but have the connection between the load balancer and the web servers over HTTP (port 80). This means less management and configuration on the servers but it seems to cause a problem if the application you're serving uses things like port number to determine if the request is HTTPS or not. 
