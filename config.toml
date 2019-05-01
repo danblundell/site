@@ -11,17 +11,17 @@ pygmentsStyle = "dracula"
     title = "Blog"
     url = "/blog/"
     weight = 1000
-  #[[menu.main]]
-  #  identifier = "weeknotes"
-  #  name = "Weeknotes"
-  #  title = "Weeknotes"
-  #  url = "/weeknotes/"
-  #  weight = -110
+  [[menu.main]]
+    identifier = "weeknotes"
+    name = "Weeknotes"
+    title = "Weeknotes"
+    url = "/weeknotes/"
+    weight = -110
   
 
 [permalinks]
   blog = "/:year/:month/:title/"
-  weeknotes = "weeknotes/:year/week-:slug/"
+  weeknotes = "/weeknotes/:year/week-:slug/"
 [params]
   themeColor = "theme-base-dan"
   description = " "
